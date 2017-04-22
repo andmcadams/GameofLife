@@ -23,7 +23,7 @@ main = do
            Just s -> 2 / (read s::Float)
            _ -> 0.1
       delay = case lookup "timer" (initSettings settings) of
-            Just s -> (read s::Int)*1000
+            Just s -> (read s::Float)*1000
             _ -> 1000
   displayCallback $= display arr delt
   reshapeCallback $= Just reshape
