@@ -21,12 +21,14 @@ nextGen xs delt = par p1 (pseq p2 (p1 ++ p2)) --[y | y <- [0..(len^2 - 1)], isAl
               (x - 1), (x), (x + 1),
               (s - 1), (s), (s + 1)] | x <- xs, let d = x - rowlen, let s = x + rowlen]
         sp = splitAt (quot (length p) 2) p
-        p1 = if length xs < (round (0.2* fromIntegral len))
+        b = [(min (xs !! 0 - rowlen - 1) 0)..(max (xs !! (length xs - 1) + rowlen + 1) len)]
+        sb = splitAt (quot (length b) 2) b
+        p1 = if length xs < (round (0.2* fromIntegral len)) -- might want to check if they are dense on an interval instead, better results
              then [y | y <- fst sp, isAlive xs y delt] 
-             else [y | y <- [0..(quot len 2)], isAlive xs y delt]
+             else [y | y <- fst sb, isAlive xs y delt]
         p2 = if length xs < (round (0.2* fromIntegral len))
              then [y | y <- snd sp, isAlive xs y delt]
-             else [y | y <- [((quot len 2) + 1)..len], isAlive xs y delt]
+             else [y | y <- snd sb, isAlive xs y delt]
 
 isAlive :: [Int] -> Int -> Float -> Bool
 isAlive xs cell delt
