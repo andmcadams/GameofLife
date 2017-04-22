@@ -1,2 +1,2 @@
 size=100
-timer=1
+timer=0.1
