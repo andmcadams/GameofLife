@@ -1,6 +1,7 @@
 module Cell where
 
 import Control.Parallel
+import Data.List
 
 --GLUT
 import Graphics.UI.GLUT
@@ -14,9 +15,18 @@ square x y delt = renderPrimitive Quads $ mapM_ vertex3f
 
 nextGen :: [Int] -> Float -> [Int]
 nextGen xs delt = par p1 (pseq p2 (p1 ++ p2)) --[y | y <- [0..(len^2 - 1)], isAlive xs y delt]
-  where len = (round (2/delt))^2 - 1
-        p1 = [y | y <- [0..(quot len 2)], isAlive xs y delt]
-        p2 = [y | y <- [((quot len 2) + 1)..len], isAlive xs y delt]
+  where len = (rowlen)^2 - 1
+        rowlen = round (2/delt)
+        p = nub $ concat [[(d - 1), (d), (d + 1),
+              (x - 1), (x), (x + 1),
+              (s - 1), (s), (s + 1)] | x <- xs, let d = x - rowlen, let s = x + rowlen]
+        sp = splitAt (quot (length p) 2) p
+        p1 = if length xs < (round (0.2* fromIntegral len))
+             then [y | y <- fst sp, isAlive xs y delt] 
+             else [y | y <- [0..(quot len 2)], isAlive xs y delt]
+        p2 = if length xs < (round (0.2* fromIntegral len))
+             then [y | y <- snd sp, isAlive xs y delt]
+             else [y | y <- [((quot len 2) + 1)..len], isAlive xs y delt]
 
 isAlive :: [Int] -> Int -> Float -> Bool
 isAlive xs cell delt
