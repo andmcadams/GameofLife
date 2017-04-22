@@ -1,2 +1,2 @@
-size=4
-timer=5
+size=100
+timer=1
